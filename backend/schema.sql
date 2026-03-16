@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS Rover_Sessions (
 
 CREATE TABLE IF NOT EXISTS Scans (
     scan_id INT AUTO_INCREMENT PRIMARY KEY,
-    session_id INT NOT NULL,
+    session_id INT NULL,
     farmer_id INT NOT NULL,
     disease_status ENUM('DISEASED', 'HEALTHY', 'NO PLANT') NOT NULL,
     image_url VARCHAR(255) NOT NULL,
@@ -41,4 +41,24 @@ CREATE TABLE IF NOT EXISTS Scans (
     -- Establishing the relationships
     FOREIGN KEY (session_id) REFERENCES Rover_Sessions(session_id),
     FOREIGN KEY (farmer_id) REFERENCES Farmers(farmer_id)
+);
+
+CREATE TABLE IF NOT EXISTS Telemetry (
+    telemetry_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- Unique ID for each telemetry row
+    session_id INT NOT NULL,    -- points towards all telemetry rows in that session
+    rover_id INT NOT NULL,
+    battery DOUBLE NOT NULL,    
+    gps_lat DOUBLE NOT NULL,
+    gps_lng DOUBLE NOT NULL,
+    heading DOUBLE NULL,    -- orientation angle
+    captured_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,   -- timestamp of reading
+
+    -- Makes lookups faster when searching by session and time 
+    INDEX idx_telemetry_session_time (session_id, captured_at),
+
+    -- speeds up look up when searching by rover and time 
+    INDEX idx_telemetry_rover_time (rover_id, captured_at),
+
+    -- Ensures telemetry rows point towards an actual session ID
+    FOREIGN KEY (session_id) REFERENCES Rover_Sessions(session_id)
 );
