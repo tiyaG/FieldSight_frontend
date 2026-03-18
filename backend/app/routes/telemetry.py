@@ -1,45 +1,22 @@
-from datetime import datetime, timezone
+# backend/app/routes/telemetry.py
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.services.telemetry_service import store_telemetry
+from app.services.telemetry_service import get_latest_telemetry
 
+# defining file path
 router = APIRouter(prefix="/rover", tags=["telemetry"])
 
-# Uses pydantic to validate/convert fields 
-class TelemetryRequest(BaseModel):
-    rover_id: int
-    battery: float
-    gps_lat: float
-    gps_lng: float
-    heading: float | None = None
-    timestamp: datetime | None = None
-
-
-# Handles POST requests towards /rover/telemetry, calls on telemetry_service.py for logic 
-@router.post("/telemetry")
-def ingest_telemetry(payload: TelemetryRequest, db: Session = Depends(get_db)):
+# registering HTTP get end point for a specific rover ID
+@router.get("/telemetry/latest/{rover_id}")
+def latest_telemetry(rover_id: int, db: Session = Depends(get_db)): # function handles sending telemetry data to frontend and possible errors
     try:
-        ts = payload.timestamp or datetime.now(timezone.utc)    # either uses device provided time or server-generated time
-        store_telemetry(
-            db=db,
-            rover_id=payload.rover_id,
-            battery=payload.battery,
-            gps_lat=payload.gps_lat,
-            gps_lng=payload.gps_lng,
-            heading=payload.heading,
-            captured_at=ts,
-        )
-        
-        return {    # only after success
-            "status": "stored",
-            "rover_id": payload.rover_id,
-            "captured_at": ts.isoformat(),
-        }
-        
-    # Rolls back DB session, returns HTTP 500
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=f"Failed to store telemetry: {e}")
+        row = get_latest_telemetry(db=db, rover_id=rover_id) # calls on telemetry_service.py function to fetch row from database
+        if not row: 
+            raise HTTPException(status_code=404, detail="No telemetry data found for the rover.") # exception occurs if no row is returned
+        return row
+    except HTTPException: 
+        raise   # continue with current 404 error
+    except Exception as e:  # catch any other exceptions 
+        raise HTTPException(status_code=500, detail=f"Failed to fetch telemetry data: {e}")
