@@ -30,6 +30,6 @@ def stop_rover (db: Session, session_id:int ) -> dict:
     session.active_command= "stop"
     db.commit()
 
-    publish_command(command="stop",rover_id= "session_id")
+    publish_command(command="stop",rover_id= "session_id" )
 
     return {"message": f"Rover stopped for session {session_id}", "status": "Stopped"}
