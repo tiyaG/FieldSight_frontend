@@ -31,7 +31,8 @@ export default function Dashboard({ onLogout, farmCoords }) {
 
   // Initialize Map
   useEffect(() => {
-    if (!MAPBOX_TOKEN) return;
+    if (!MAPBOX_TOKEN || !mapContainer.current) return;
+    
     mapboxgl.accessToken = MAPBOX_TOKEN;
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -54,7 +55,8 @@ export default function Dashboard({ onLogout, farmCoords }) {
     });
 
     return () => map.current?.remove();
-  }, []);
+    // Added farmCoords to dependency array so it updates if user logs in with new coords
+  }, [farmCoords]); 
 
   // Handle Path Drawing
   useEffect(() => {
@@ -77,9 +79,9 @@ export default function Dashboard({ onLogout, farmCoords }) {
 
   // FETCH TELEMETRY & IMAGES
   const pollBackend = async () => {
-    const token = localStorage.getItem("token"); // Get auth token
+    const token = localStorage.getItem("token");
     try {
-      // 1. Get Rover Position (Telemetry)
+      // 1. Get Rover Position
       const telRes = await fetch(`${API_URL}/api/telemetry/latest`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -99,7 +101,7 @@ export default function Dashboard({ onLogout, farmCoords }) {
         map.current.easeTo({ center: pos, duration: 800 });
       }
 
-      // 2. Get New Detections
+      // 2. Get Detections
       const imgRes = await fetch(`${API_URL}/api/images/detections`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -149,7 +151,6 @@ export default function Dashboard({ onLogout, farmCoords }) {
       });
 
       if (!response.ok) throw new Error("Backend failed to start rover");
-
       pollInterval.current = setInterval(pollBackend, 1500);
 
     } catch (err) {
