@@ -4,6 +4,7 @@ import Dashboard from './Dashboard'; // Make sure this matches the filename exac
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const [farmLocation, setFarmLocation] = useState({ lng: -118.2437, lat: 34.0522 });
 
   const handleLoginSuccess = (coords) => {
