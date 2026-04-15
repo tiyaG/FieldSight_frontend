@@ -224,11 +224,13 @@ export default function Dashboard({ onLogout, farmCoords }) {
 
   const stopScan = async () => {
     const token = localStorage.getItem("token");
+    if (!currentSessionId) return setError("No active session found.");
+    
     setIsScanning(false); 
     disconnectWebSockets();
     
     try {
-      const response = await fetch(`${VITE_API_URL}/api/rover/stop?farmer_id=${FARMER_ID}`, { 
+      const response = await fetch(`${VITE_API_URL}/api/rover/stop/${currentSessionId}`, { 
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,
