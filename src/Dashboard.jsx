@@ -7,7 +7,8 @@ const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 const VITE_API_URL = import.meta.env.VITE_API_URL || "https://api.fieldsightproject.com";
 
 export default function Dashboard({ onLogout, farmCoords }) {
-  const FARMER_ID = 1; 
+  // Modified farmer_id from 1 to 8
+  const FARMER_ID = 8; 
   const ROVER_ID = 1; 
 
   const mapContainer = useRef(null);
