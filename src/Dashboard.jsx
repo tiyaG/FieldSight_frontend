@@ -246,7 +246,7 @@ export default function Dashboard({ onLogout, farmCoords }) {
     }
 
     if (scanCount === 0) {
-      alert("Scan Complete: No anomalies found along this pathway.");
+      alert("Scan Complete: No anomalies found along this pathway..");
     }
   };
 
