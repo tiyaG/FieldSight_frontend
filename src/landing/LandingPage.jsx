@@ -149,7 +149,7 @@ const LandingPage = ({ onLoginClick, onAboutClick }) => {
             </p>
             <ul style={{ paddingLeft: '0', listStyle: 'none', textAlign: 'left' }}>
               <li style={{ marginBottom: '12px' }}>
-                <strong>• Autonomous Navigation:</strong> Moves down rows of tomato crops without human supervision.
+                <strong>• Autonomous Navigation:</strong> Moves down rows of crops without human supervision.
               </li>
               <li style={{ marginBottom: '12px' }}>
                 <strong>• AI-Powered Vision:</strong> Analyzes plant health in real-time.
