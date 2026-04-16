@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import LandingPage from './landing/LandingPage';
 import Auth from './Auth/Auth';
 import Dashboard from './Dashboard'; 
+import AboutUs from './AboutUs'; // Ensure the file path matches your VS Code structure
 
 export default function App() {
   // 'landing' is the default view for fieldsightproject.com
@@ -37,10 +38,28 @@ export default function App() {
       
       {/* 1. LANDING PAGE - Default Entry Point */}
       {currentView === 'landing' && (
-        <LandingPage onLoginClick={() => setCurrentView('login')} />
+        <LandingPage 
+          onLoginClick={() => setCurrentView('login')} 
+          onAboutClick={() => setCurrentView('about')}
+          onProductClick={() => setCurrentView('product')}
+        />
       )}
 
-      {/* 2. AUTHENTICATION VIEW (Login/Signup) */}
+      {/* 2. ABOUT US VIEW - Team & Gallery */}
+      {currentView === 'about' && (
+        <AboutUs onBackClick={() => setCurrentView('landing')} />
+      )}
+
+      {/* 3. OUR PRODUCT VIEW - (Placeholder for your product page) */}
+      {currentView === 'product' && (
+        <div style={{ backgroundColor: '#acc0a4', minHeight: '100vh', padding: '100px' }}>
+             <button onClick={() => setCurrentView('landing')} style={{cursor: 'pointer'}}>← Back</button>
+             <h1>Our Product Page Coming Soon</h1>
+             {/* You can swap this <div> for a proper <OurProduct /> component later */}
+        </div>
+      )}
+
+      {/* 4. AUTHENTICATION VIEW (Login/Signup) */}
       {currentView === 'login' && (
         <Auth 
           onLoginSuccess={handleLoginSuccess} 
@@ -48,7 +67,7 @@ export default function App() {
         />
       )}
 
-      {/* 3. DASHBOARD VIEW - Protected View */}
+      {/* 5. DASHBOARD VIEW - Protected View */}
       {currentView === 'dashboard' && (
         <Dashboard 
           onLogout={handleLogout} 
