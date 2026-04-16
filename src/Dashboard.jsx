@@ -14,10 +14,10 @@ export default function Dashboard({ onLogout, farmCoords }) {
   const roverMarker = useRef(null);
   const animationRef = useRef(null);
   const activeMarkers = useRef([]); 
-  const lastScanMarker = useRef(null); // Track the very last pinpoint for the "View Results" button
+  const lastScanMarker = useRef(null); 
   
   const telemetryWS = useRef(null);
-  const scansWS = useRef(null);
+  const scansWS = useRef(null); // Ref held for manual closing if needed
   
   const [searchInput, setSearchInput] = useState('');
   const [currentCoords, setCurrentCoords] = useState(farmCoords || { lng: -121.88107, lat: 37.33332 });
@@ -45,6 +45,49 @@ export default function Dashboard({ onLogout, farmCoords }) {
       0: '#4CAF50'  
     }
   };
+
+  // --- PERSISTENT WEBSOCKET LOGIC ---
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!currentSessionId || !token) return;
+
+    const wsBase = VITE_API_URL.replace("https://", "wss://").replace("http://", "ws://");
+    const scansUrl = `${wsBase}/websocket/scans/${currentSessionId}?token=${token}`;
+    
+    console.log("🔗 Opening Persistent Scan Socket...");
+    const socket = new WebSocket(scansUrl);
+    scansWS.current = socket;
+
+    socket.onopen = () => {
+      console.log("✅ WebSocket Connected: Row status 101 (Pending)");
+      setBackendStatus('online');
+    };
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "scan.stored") {
+        console.log("📸 Scan Received via Socket:", data.scan);
+        setRealImagesReceived(true);
+        const newScan = data.scan;
+        setScanDataBuffer(prev => [...prev, newScan]);
+        setScanCount(prev => prev + 1);
+        dropScanPin(newScan);
+      }
+    };
+
+    socket.onerror = () => {
+      console.error("❌ Socket Error");
+      setBackendStatus('offline');
+    };
+
+    // Keep connection open until session changes or component unmounts
+    return () => {
+      if (socket.readyState === WebSocket.OPEN) {
+        console.log("🔌 Closing Scan Socket");
+        socket.close();
+      }
+    };
+  }, [currentSessionId]); 
 
   const normalizeSeverity = (severity) => {
     if (typeof severity === "number") return severity;
@@ -88,20 +131,18 @@ export default function Dashboard({ onLogout, farmCoords }) {
       .setPopup(popup)
       .addTo(map.current);
     
-    lastScanMarker.current = marker; // Store for the "View Results" button
+    lastScanMarker.current = marker; 
     activeMarkers.current.push(marker);
   };
 
-  const connectWebSockets = (sessionId) => {
+  const connectTelemetryWS = () => {
     const token = localStorage.getItem("token");
-    if (!token || !sessionId) return;
+    if (!token) return;
 
     const wsBase = VITE_API_URL.replace("https://", "wss://").replace("http://", "ws://");
     const telemetryUrl = `${wsBase}/websocket/telemetry/${ROVER_ID}?token=${token}`;
-    const scansUrl = `${wsBase}/websocket/scans/${sessionId}?token=${token}`;
 
     telemetryWS.current = new WebSocket(telemetryUrl);
-    scansWS.current = new WebSocket(scansUrl);
 
     telemetryWS.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -112,18 +153,6 @@ export default function Dashboard({ onLogout, farmCoords }) {
         updateRoverMarker([tel.gps_lng, tel.gps_lat]);
       }
     };
-
-    scansWS.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === "scan.stored") {
-        setRealImagesReceived(true);
-        const newScan = data.scan;
-        setScanDataBuffer(prev => [...prev, newScan]);
-        setScanCount(prev => prev + 1);
-        dropScanPin(newScan);
-      }
-    };
-
     telemetryWS.current.onopen = () => setBackendStatus('online');
     telemetryWS.current.onerror = () => setBackendStatus('offline');
   };
@@ -188,6 +217,8 @@ export default function Dashboard({ onLogout, farmCoords }) {
       }
     });
 
+    connectTelemetryWS();
+
     return () => map.current?.remove();
   }, []);
 
@@ -201,6 +232,7 @@ export default function Dashboard({ onLogout, farmCoords }) {
     updateRoverMarker(drawPath[0]);
 
     const storedFarmerId = localStorage.getItem("farmer_id");
+    if (!storedFarmerId || storedFarmerId === "null") return;
     const token = localStorage.getItem("token");
 
     setIsScanning(true);
@@ -217,9 +249,8 @@ export default function Dashboard({ onLogout, farmCoords }) {
       });
       const data = await response.json();
       if (response.ok) {
-        setBackendStatus('online');
+        // SETTING THIS TRIGGERS THE PERSISTENT WEBSOCKET EFFECT ABOVE
         setCurrentSessionId(data.session_id);
-        connectWebSockets(data.session_id); 
       }
     } catch (err) {
       setBackendStatus('offline');
@@ -240,13 +271,8 @@ export default function Dashboard({ onLogout, farmCoords }) {
         });
       } catch (e) {}
     }
-
-    if (scanCount === 0) {
-      alert("Scan Complete: No anomalies found along this pathway.");
-    }
   };
 
-  // FLY TO LATEST PIN LOGIC
   const viewLatestResult = () => {
     if (lastScanMarker.current) {
       const lngLat = lastScanMarker.current.getLngLat();
@@ -299,7 +325,6 @@ export default function Dashboard({ onLogout, farmCoords }) {
                 <span style={{ color: scanCount > 0 ? 'red' : 'green', fontWeight: 'bold' }}>{scanCount}</span>
               </div>
               
-              {/* VIEW RESULTS BUTTON */}
               <button 
                 onClick={viewLatestResult}
                 disabled={scanCount === 0}

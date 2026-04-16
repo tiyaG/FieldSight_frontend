@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Camera } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Camera, ArrowLeft } from 'lucide-react';
 
 const AboutUs = ({ onBackClick }) => {
   const theme = {
@@ -19,14 +19,6 @@ const AboutUs = ({ onBackClick }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const teams = [
-    { title: "💻 SOFTWARE TEAM", text: "Architecting the digital brain, autonomous pathfinding, and real-time cloud sync." },
-    { title: "⚙️ MECHANICAL TEAM", text: "Designing the rugged chassis, suspension systems, and weatherproof housing." },
-    { title: "⚡ ELECTRICAL TEAM", text: "Managing power distribution, sensor arrays, and high-speed data transmission." },
-    { title: "🔬 MICRO TEAM", text: "Precision micro-controllers and low-level firmware optimization." }
-  ];
-
-  // Logic for gallery horizontal scrolling
   const scrollGallery = (direction) => {
     if (galleryRef.current) {
       const scrollAmount = direction === 'left' ? -400 : 400;
@@ -38,159 +30,205 @@ const AboutUs = ({ onBackClick }) => {
     <div style={{ 
       backgroundColor: theme.sageGreenBg, 
       minHeight: '100vh', 
-      width: '100%',
+      width: '100%', 
       color: theme.darkBrownText, 
       fontFamily: "'Plus Jakarta Sans', sans-serif",
-      position: 'relative'
+      margin: 0,
+      padding: 0,
+      overflowX: 'hidden'
     }}>
       
-      {/* --- FIXED HEADER (Title and Photo Placeholder) --- */}
+      {/* --- DYNAMIC HEADER --- */}
       <header style={{ 
-        position: 'fixed', top: 0, width: '100%', height: '180px', zIndex: 100, 
-        display: 'flex', gap: '30px', padding: '0 8%', boxSizing: 'border-box',
-        alignItems: 'center', backgroundColor: scrollY > 10 ? 'rgba(172, 192, 164, 0.98)' : 'rgba(172, 192, 164, 0.8)',
-        backdropFilter: 'blur(20px)', borderBottom: scrollY > 10 ? `1px solid rgba(62, 50, 43, 0.1)` : '1px solid transparent',
-        transition: '0.3s'
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        padding: scrollY > 50 ? '10px 8%' : '25px 8%', 
+        alignItems: 'center',
+        backgroundColor: scrollY > 50 ? 'rgba(215, 192, 174, 0.95)' : 'transparent',
+        backdropFilter: 'blur(15px)',
+        position: 'fixed',
+        top: 0,
+        zIndex: 1000,
+        width: '100%',
+        boxSizing: 'border-box',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        borderBottom: scrollY > 50 ? `1px solid rgba(62, 50, 43, 0.1)` : '1px solid transparent'
       }}>
-        <div style={{ flex: '0 0 auto', textAlign: 'left' }}>
-            <h1 style={{ fontWeight: '900', fontSize: '3rem', margin: '0 0 10px 0', letterSpacing: '-2px', lineHeight: 1 }}>Meet The<br/>Team.</h1>
-            <button onClick={onBackClick} className="back-btn">← Back to Mission</button>
+        <div style={{ fontSize: '1.6rem', fontWeight: '900', letterSpacing: '-1px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="logo-pulse-green"></div>
+          FieldSight <span style={{ color: theme.accentGreen, fontWeight: '400' }}>Engineers</span>
         </div>
-
-        {/* THETA TAU PHOTO PLACEHOLDER (Beside Title) */}
-        <div style={{ flex: '1', height: '120px', backgroundColor: theme.pastelBrown, borderRadius: '20px', position: 'relative', border: `3px dashed ${theme.darkBrownText}`, boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{fontWeight: '800', opacity: 0.5, textTransform: 'uppercase', fontSize: '11px', letterSpacing: '1px'}}>[ PASTE THETA TAU GROUP PHOTO URL HERE ]</div>
-            <div style={{ position: 'absolute', bottom: '10px', right: '15px', fontSize: '12px', fontWeight: 'bold' }}>Engineering Class of 2026</div>
-        </div>
+        
+        <button onClick={onBackClick} className="back-nav-btn-modern">
+          <ArrowLeft size={16} /> RETURN TO MISSION
+        </button>
       </header>
 
-      {/* --- CONTENT SECTION (Scrolls over the background) --- */}
-      <main style={{ position: 'relative', zIndex: 2, paddingTop: '180px', paddingBottom: '100px' }}>
+      <main style={{ width: '100%', maxWidth: '1300px', margin: '0 auto', padding: '180px 5% 100px 5%', boxSizing: 'border-box' }}>
         
-        {/* TEAM STORY SECTION */}
-        <section className="scroll-reveal-section" style={{ padding: '80px 8%', maxWidth: '1000px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', gap: '60px', alignItems: 'center', backgroundColor: theme.pastelBrown, padding: '60px', borderRadius: '40px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
-            
-            <div style={{ flex: '1' }}>
-                <div style={{ borderBottom: `4px solid ${theme.darkBrownText}`, paddingBottom: '10px', marginBottom: '20px', fontSize: '1.8rem', fontWeight: '800' }}>Project Engineers</div>
-                <p style={{ lineHeight: '1.8', opacity: 0.9 }}>
-                    A collaborative collective of dedicated problem-solvers from the Theta Tau Engineering fraternity. We came together to solve manual scouting in agriculture, combining our skills in computer logic, physics, circuitry, and core material science.
-                </p>
-            </div>
+        {/* --- HERO SECTION (Centered Title) --- */}
+        <header style={{ marginBottom: '60px', textAlign: 'center' }}>
+          <h1 className="hero-title-about-centered">
+            Meet The<br/>
+            <span className="text-outline-about">Engineers.</span>
+          </h1>
+          <p className="hero-subtitle-about">
+            Theta Tau • San Jose State University • Class of 2026
+          </p>
+        </header>
 
-            <div style={{ flex: '1' }}>
-              {teams.map((team, index) => (
-                <div key={index} style={{ marginBottom: '20px', padding: '15px', background: 'rgba(255,255,255,0.4)', borderRadius: '15px', transition: '0.4s' }} className="team-item-list">
-                  <h4 style={{ fontWeight: '800', margin: '0 0 5px 0' }}>{team.title}</h4>
-                  <p style={{ opacity: 0.7, margin: 0, fontSize: '14px' }}>{team.text}</p>
-                </div>
-              ))}
-            </div>
+        {/* --- BIG TEAM IMAGE SECTION (Scaled down & Centered Text) --- */}
+        <section style={{ marginBottom: '100px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div className="team-frame-refined">
+            <img 
+              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1600" 
+              alt="FieldSight Engineering Team" 
+              className="big-team-img"
+            />
+            <div className="image-vignette-about"></div>
+          </div>
+          
+          <div style={{ marginTop: '60px', maxWidth: '850px', textAlign: 'center' }}>
+            <h2 className="team-description-text-centered">
+              We are a team of <strong>17 engineers</strong> developing autonomous rovers to help community farmers identify diseases in crop beds at an early stage. Through the integration of <strong>software, mechanical, electrical, and microcontroller systems</strong>, our AI-driven technology analyzes diverse plant types, making plant monitoring more accessible, accurate, and efficient.
+            </h2>
           </div>
         </section>
 
-        {/* PROJECT GALLERY SECTION WITH ARROWS (NO IMAGES, BLANK SLOTS) */}
-        <section className="scroll-reveal-section" style={{ padding: '0 8%', maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '40px' }}>
-            <h2 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>Project Artifacts</h2>
-            <div style={{ display: 'flex', gap: '10px' }}>
-                <button onClick={() => scrollGallery('left')} className="arrow-btn"><ChevronLeft /></button>
-                <button onClick={() => scrollGallery('right')} className="arrow-btn"><ChevronRight /></button>
+        {/* --- PROJECT GALLERY (Gallery remains interactive) --- */}
+        <section style={{ marginBottom: '100px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px' }}>
+            <div>
+              <h3 className="section-tag-about">Engineering Log</h3>
+              <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: 0, letterSpacing: '-2px' }}>Project Artifacts</h2>
+            </div>
+            <div style={{ display: 'flex', gap: '12px', marginBottom: '10px' }}>
+              <button onClick={() => scrollGallery('left')} className="gallery-nav-modern"><ChevronLeft size={24}/></button>
+              <button onClick={() => scrollGallery('right')} className="gallery-nav-modern"><ChevronRight size={24}/></button>
             </div>
           </div>
-          
-          <div ref={galleryRef} className="gallery-carousel">
-            {[1, 2, 3, 4, 5].map((idx) => (
-              <div key={idx} className="gallery-card">
-                  <div className="empty-photo-card">
-                    <Camera size={40} />
-                    <span>[ PASTE GALLERY IMAGE URL HERE ]</span>
-                  </div>
-                  <div className="card-label">PROJECT_SCAN_0{idx}</div>
+
+          <div ref={galleryRef} className="gallery-scroll-modern">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="artifact-card-modern">
+                <div className="artifact-visual">
+                  <Camera size={32} strokeWidth={1} opacity={0.3} />
+                </div>
+                <div className="artifact-info">
+                  <span className="serial-no">SYSTEM_ARTIFACT_00{i}</span>
+                  <span className="status-badge">DOCUMENTED</span>
+                </div>
               </div>
             ))}
           </div>
         </section>
       </main>
 
-      <footer className="modern-footer">
-        <div className="footer-content">
-          <div className="footer-logo">FIELDSIGHT</div>
-          <p>© 2026 • Advanced Agricultural Systems</p>
+      {/* --- MODERN FOOTER --- */}
+      <footer className="footer-modern-about">
+        <div className="footer-logo-bg">FIELDSIGHT</div>
+        <div style={{ position: 'relative', zIndex: 2 }}>
+          <p style={{ fontWeight: 800, fontSize: '14px', margin: 0 }}>© 2026 FIELD SIGHT SYSTEMS • SJSU THETA TAU</p>
+          <p style={{ opacity: 0.5, fontSize: '12px', marginTop: '5px' }}>Advanced Agricultural Autonomy Group</p>
         </div>
       </footer>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;900&display=swap');
-        
-        html { scroll-behavior: smooth; }
-        
-        .back-btn {
-          background: #3e322b; color: white; border: none; padding: 10px 20px;
-          border-radius: 50px; cursor: pointer; font-weight: 700; transition: 0.3s;
-          font-family: inherit; font-size: 13px;
-        }
-        .back-btn:hover { background: #5e6b56; transform: translateY(-2px); }
-
-        .team-item-list:hover {
-          transform: translateX(10px);
-          background: white;
+        .logo-pulse-green {
+          width: 14px; height: 14px; background: #5e6b56; border-radius: 3px;
+          animation: rotate 8s infinite linear;
         }
 
-        /* Gallery Carousel Styles */
-        .gallery-carousel {
-          display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px;
-          scrollbar-width: none; /* Hide scrollbar for clean look */
-        }
-        .gallery-carousel::-webkit-scrollbar { display: none; }
-        
-        .gallery-card {
-          flex: 0 0 350px;
-          border-radius: 20px;
-        }
-
-        .empty-photo-card {
-          height: 350px;
-          background-color: white;
-          border-radius: 20px;
-          border: 3px dashed rgba(62, 50, 43, 0.2);
-          box-sizing: border-box;
-          display: flex; flex-direction: column; align-items: center; justify-content: center;
-          gap: 15px; text-align: center; color: rgba(62, 50, 43, 0.4);
-          font-weight: 800; text-transform: uppercase; font-size: 11px; letter-spacing: 1px;
-          padding: 30px;
-        }
-
-        .card-label {
-            margin-top: 15px; font-weight: 800; font-size: 12px; opacity: 0.6;
-            text-align: center;
-        }
-
-        .arrow-btn {
-            background: white; color: #3e322b; border: 1px solid rgba(0,0,0,0.1);
-            width: 50px; height: 50px; border-radius: 50%;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: 0.3s;
-        }
-        .arrow-btn:hover { background: #3e322b; color: white; transform: scale(1.1); }
-
-        .modern-footer {
-          background: #3e322b;
-          color: #d7c0ae;
-          padding: 100px 5% 60px 5%;
-          border-radius: 80px 80px 0 0;
+        .hero-title-about-centered {
+          font-size: clamp(3.5rem, 10vw, 7rem);
+          font-weight: 900; line-height: 0.85; letter-spacing: -5px; margin: 0 auto;
           text-align: center;
         }
 
-        .footer-logo {
-          font-size: 5rem;
-          font-weight: 900;
-          opacity: 0.05;
-          margin-bottom: -15px;
-          letter-spacing: -5px;
+        .text-outline-about {
+          -webkit-text-stroke: 1.5px #3e322b; color: transparent;
         }
 
-        body { background-color: #acc0a4; margin: 0; }
+        .hero-subtitle-about {
+          margin-top: 25px; font-size: 1.1rem; font-weight: 700; opacity: 0.6;
+          letter-spacing: 3px; text-transform: uppercase;
+        }
+
+        .back-nav-btn-modern {
+          background: #3e322b; color: white; border: none; padding: 12px 24px;
+          border-radius: 100px; cursor: pointer; font-weight: 800; font-size: 12px;
+          display: flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .back-nav-btn-modern:hover { transform: scale(1.05); background: #5e6b56; }
+
+        .team-frame-refined {
+          width: 100%;
+          max-width: 1000px; /* Reduced max-width */
+          height: 500px;      /* Reduced height */
+          border-radius: 40px;
+          overflow: hidden;
+          position: relative;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+          border: 4px solid white; /* Added border to match hero depth style */
+        }
+
+        .big-team-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .image-vignette-about {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to bottom, transparent 60%, rgba(62, 50, 43, 0.2));
+        }
+
+        .team-description-text-centered {
+          font-size: clamp(1.3rem, 2.2vw, 1.6rem); /* Scaled down text */
+          line-height: 1.6;
+          font-weight: 400;
+          color: #3e322b;
+          text-align: center;
+        }
+
+        .gallery-scroll-modern { display: flex; gap: 25px; overflow-x: auto; scrollbar-width: none; padding: 20px 0; }
+        .gallery-scroll-modern::-webkit-scrollbar { display: none; }
+
+        .artifact-card-modern {
+          flex: 0 0 320px; background: white; border-radius: 30px; overflow: hidden;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s;
+        }
+        .artifact-card-modern:hover { transform: scale(1.02); }
+
+        .artifact-visual {
+          height: 300px; background: #f0f3ef; display: flex; align-items: center; 
+          justify-content: center; position: relative;
+        }
+
+        .artifact-info { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .serial-no { font-size: 11px; font-weight: 900; opacity: 0.5; }
+        .status-badge { background: #acc0a4; color: #3e322b; padding: 4px 10px; border-radius: 5px; font-size: 9px; font-weight: 900; }
+
+        .gallery-nav-modern {
+          width: 54px; height: 54px; border-radius: 50%; border: 1.5px solid #3e322b;
+          background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
+          transition: 0.3s;
+        }
+        .gallery-nav-modern:hover { background: #3e322b; color: white; }
+
+        .footer-modern-about {
+          background: #3e322b; color: white; padding: 100px 5%; border-radius: 60px 60px 0 0;
+          text-align: center; position: relative; overflow: hidden;
+        }
+        .footer-logo-bg {
+          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+          font-size: 10rem; font-weight: 900; opacity: 0.03; letter-spacing: -10px;
+        }
+
+        .section-tag-about { text-transform: uppercase; letter-spacing: 4px; font-size: 12px; color: #5e6b56; font-weight: 800; margin-bottom: 5px; }
+
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
     </div>
   );

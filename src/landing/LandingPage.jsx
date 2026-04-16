@@ -76,8 +76,6 @@ const LandingPage = ({ onLoginClick, onAboutClick }) => {
           >
             About Us
           </button>
-
-          <a href="#product" className="nav-link-modern">Our Product</a>
         </nav>
 
         <button onClick={onLoginClick} className="shiny-login-btn">
