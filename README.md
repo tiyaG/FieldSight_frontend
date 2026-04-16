@@ -1,11 +1,6 @@
 # FieldSight 🚀
 **Advanced Agricultural Autonomy Group • SJSU Theta Tau • Class of 2026**
 
-FieldSight is a full-stack IoT platform and AI-driven agricultural monitoring system. We develop autonomous rovers designed to navigate crop beds and identify plant diseases at an early stage using computer vision and integrated hardware systems.
-
-# FieldSight 🚀
-**Advanced Agricultural Autonomy Group • SJSU Theta Tau • Class of 2026**
-
 FieldSight is a full-stack AI-driven agricultural monitoring platform. We develop autonomous rovers designed to navigate crop beds and identify plant diseases at an early stage using computer vision and integrated hardware systems.
 
 ## 🖥️ Platform Overview
