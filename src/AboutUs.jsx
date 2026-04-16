@@ -13,6 +13,16 @@ const AboutUs = ({ onBackClick }) => {
   const [scrollY, setScrollY] = useState(0);
   const galleryRef = useRef(null);
 
+  // Map your uploaded images to the gallery
+  const projectImages = [
+    "/IMG_2992.JPG",
+    "/IMG_3202.JPG",
+    "/IMG_3210.JPG",
+    "/IMG_2990.JPG",
+    "/IMG_3718.JPG",
+    "/07669375-501E-442A-95DA-FB8F0F48E19B.JPG"
+  ];
+
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
@@ -66,7 +76,7 @@ const AboutUs = ({ onBackClick }) => {
 
       <main style={{ width: '100%', maxWidth: '1300px', margin: '0 auto', padding: '180px 5% 100px 5%', boxSizing: 'border-box' }}>
         
-        {/* --- HERO SECTION (Centered Title) --- */}
+        {/* --- HERO SECTION --- */}
         <header style={{ marginBottom: '60px', textAlign: 'center' }}>
           <h1 className="hero-title-about-centered">
             Meet The<br/>
@@ -77,11 +87,11 @@ const AboutUs = ({ onBackClick }) => {
           </p>
         </header>
 
-        {/* --- BIG TEAM IMAGE SECTION (Scaled down & Centered Text) --- */}
+        {/* --- MAIN TEAM IMAGE --- */}
         <section style={{ marginBottom: '100px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div className="team-frame-refined">
             <img 
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1600" 
+              src="/IMG_3194.JPG" 
               alt="FieldSight Engineering Team" 
               className="big-team-img"
             />
@@ -95,7 +105,7 @@ const AboutUs = ({ onBackClick }) => {
           </div>
         </section>
 
-        {/* --- PROJECT GALLERY (Gallery remains interactive) --- */}
+        {/* --- PROJECT GALLERY --- */}
         <section style={{ marginBottom: '100px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px' }}>
             <div>
@@ -109,13 +119,13 @@ const AboutUs = ({ onBackClick }) => {
           </div>
 
           <div ref={galleryRef} className="gallery-scroll-modern">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {projectImages.map((imgSrc, i) => (
               <div key={i} className="artifact-card-modern">
                 <div className="artifact-visual">
-                  <Camera size={32} strokeWidth={1} opacity={0.3} />
+                  <img src={imgSrc} alt={`Artifact ${i}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div className="artifact-info">
-                  <span className="serial-no">SYSTEM_ARTIFACT_00{i}</span>
+                  <span className="serial-no">SYSTEM_ARTIFACT_00{i + 1}</span>
                   <span className="status-badge">DOCUMENTED</span>
                 </div>
               </div>
@@ -163,13 +173,13 @@ const AboutUs = ({ onBackClick }) => {
 
         .team-frame-refined {
           width: 100%;
-          max-width: 1000px; /* Reduced max-width */
-          height: 500px;      /* Reduced height */
+          max-width: 1000px;
+          height: 500px;
           border-radius: 40px;
           overflow: hidden;
           position: relative;
           box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-          border: 4px solid white; /* Added border to match hero depth style */
+          border: 4px solid white;
         }
 
         .big-team-img {
@@ -185,7 +195,7 @@ const AboutUs = ({ onBackClick }) => {
         }
 
         .team-description-text-centered {
-          font-size: clamp(1.3rem, 2.2vw, 1.6rem); /* Scaled down text */
+          font-size: clamp(1.3rem, 2.2vw, 1.6rem);
           line-height: 1.6;
           font-weight: 400;
           color: #3e322b;
@@ -203,7 +213,7 @@ const AboutUs = ({ onBackClick }) => {
 
         .artifact-visual {
           height: 300px; background: #f0f3ef; display: flex; align-items: center; 
-          justify-content: center; position: relative;
+          justify-content: center; position: relative; overflow: hidden;
         }
 
         .artifact-info { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
