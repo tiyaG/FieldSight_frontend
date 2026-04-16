@@ -100,7 +100,7 @@ const AboutUs = ({ onBackClick }) => {
           
           <div style={{ marginTop: '60px', maxWidth: '850px', textAlign: 'center' }}>
             <h2 className="team-description-text-centered">
-              We are a team of <strong>17 engineers</strong> developing autonomous rovers to help community farmers identify diseases in crop beds at an early stage. Through the integration of <strong>software, mechanical, electrical, and microcontroller systems</strong>, our AI-driven technology analyzes diverse plant types, making plant monitoring more accessible, accurate, and efficient.
+              We are a team of <strong>18 engineers</strong> developing autonomous rovers to help community farmers identify diseases in crop beds at an early stage. Through the integration of <strong>software, mechanical, electrical, and microcontroller systems</strong>, our AI-driven technology analyzes diverse plant types, making plant monitoring more accessible, accurate, and efficient.
             </h2>
           </div>
         </section>
